@@ -5,6 +5,7 @@ const {
   forgotPassword,
   resetPassword,
   uploadProfileImage,
+  getUsers,
 } = require("../controllers/userController");
 const { protect } = require("../middlewares/authMiddleware");
 const multer = require("multer");
