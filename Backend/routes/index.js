@@ -2,7 +2,6 @@ const express = require("express");
 const userRoutes = require("./userRoutes");
 const wishlistRoutes = require("./wishlistRoutes");
 const propertiesRoutes = require("./propertyRoutes");
-const wishlistRoutes = require("./wishlistRoutes");
 // const wishlistRoutes = require("./wishlistRoutes");
 
 const router = express.Router();
