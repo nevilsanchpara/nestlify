@@ -8,13 +8,13 @@ const transporter = nodemailer.createTransport({
   auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
 });
 
-
 // @desc    Register User
 exports.registerUser = async (req, res) => {
   try {
     const { firstName, lastName, email, password, phone } = req.body;
 
-    if (!firstName || !lastName || !email || !password) return res.status(400).json({ message: "All fields required" });
+    if (!firstName || !lastName || !email || !password)
+      return res.status(400).json({ message: "All fields required" });
 
     let user = await User.findOne({ email });
     if (user) return res.status(400).json({ message: "User already exists" });
@@ -30,7 +30,18 @@ exports.registerUser = async (req, res) => {
       html: `<p>Thank you for choosing Nestlify!! Click <a href="${verificationLink}">here</a> to verify your email.</p>`,
     });
 
-    res.status(201).json({ message: "Verification email sent. Please check your inbox." });
+    res
+      .status(201)
+      .json({ message: "Verification email sent. Please check your inbox." });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getUsers = async (req, res) => {
+  try {
+    const users = await User.find();
+    res.json(users);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -39,7 +50,9 @@ exports.registerUser = async (req, res) => {
 // @desc    Verify Email
 exports.verifyEmail = async (req, res) => {
   try {
-    const user = await User.findOne({ emailVerificationToken: req.params.token });
+    const user = await User.findOne({
+      emailVerificationToken: req.params.token,
+    });
     if (!user) return res.status(400).json({ message: "Invalid token" });
 
     user.isVerified = true;
@@ -82,7 +95,8 @@ exports.resetPassword = async (req, res) => {
       resetPasswordExpires: { $gt: Date.now() },
     });
 
-    if (!user) return res.status(400).json({ message: "Invalid or expired token" });
+    if (!user)
+      return res.status(400).json({ message: "Invalid or expired token" });
 
     user.password = req.body.password;
     user.resetPasswordToken = undefined;
@@ -106,7 +120,10 @@ exports.uploadProfileImage = async (req, res) => {
     user.profileImage = `/uploads/${req.file.filename}`;
     await user.save();
 
-    res.json({ message: "Profile image updated successfully", profileImage: user.profileImage });
+    res.json({
+      message: "Profile image updated successfully",
+      profileImage: user.profileImage,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
