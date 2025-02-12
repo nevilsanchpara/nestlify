@@ -4,14 +4,14 @@ const connectDB = require("./config/db");
 const routes = require("./routes");
 const swaggerDocs = require("./utils/swagger");
 const errorHandler = require("./middlewares/errorHandler");
-
+const cors = require("cors");
 const app = express();
 
 // Middleware
 app.use(express.json());
+app.use(cors());
 
 // Connect to Database
-
 
 connectDB();
 swaggerDocs(app);

@@ -6,6 +6,7 @@ const {
   resetPassword,
   uploadProfileImage,
   getUsers,
+  loginUser,
 } = require("../controllers/userController");
 const { protect } = require("../middlewares/authMiddleware");
 const multer = require("multer");
@@ -27,6 +28,7 @@ const upload = multer({ storage });
  *   description: API for managing cities
  */
 router.post("/register", registerUser);
+router.post("/login", loginUser);
 router.get("/verify/:token", verifyEmail);
 router.post("/forgot-password", forgotPassword);
 router.get("/", getUsers);

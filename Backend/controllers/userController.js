@@ -18,10 +18,18 @@ exports.registerUser = async (req, res) => {
 
     let user = await User.findOne({ email });
     if (user) return res.status(400).json({ message: "User already exists" });
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    user = new User({ firstName, lastName, email, password, phone });
+    user = new User({
+      firstName,
+      lastName,
+      email,
+      password: hashedPassword,
+      phone,
+    });
     user.generateEmailToken();
     await user.save();
+    console.log(user);
 
     const verificationLink = `${process.env.BASE_URL}/api/users/verify/${user.emailVerificationToken}`;
     await transporter.sendMail({
@@ -34,6 +42,35 @@ exports.registerUser = async (req, res) => {
       .status(201)
       .json({ message: "Verification email sent. Please check your inbox." });
   } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.loginUser = async (req, res) => {
+  try {
+    console.log("hi");
+    const { email, password } = req.body;
+    if (!email || !password)
+      return res.status(400).json({ message: "All fields required" });
+
+    const user = await User.findOne({ email });
+    console.log(user);
+    if (!user) return res.status(400).json({ message: "User not found" });
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch)
+      return res.status(400).json({ message: "Invalid credentials" });
+    if (!user.isVerified)
+      return res.status(400).json({ message: "Email not verified" });
+
+    const secretKey = "yourSecretKey";
+    const options = {
+      expiresIn: "5h", // Token expiration time
+    };
+
+    const token = jwt.sign({ _id: user._id }, secretKey, options);
+    res.json({ token });
+  } catch (error) {
+    console.log(error);
     res.status(500).json({ message: error.message });
   }
 };
