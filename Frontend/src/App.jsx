@@ -1,16 +1,31 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Navbar from './Components/Navbar';
+import Footer from './Components/Footer';
+import Home from './Components/Home';
+import ListingExplore from './components/ListingExplore';
+import ContactUs from './components/ContactUs';
+import LoginRegister from './Components/LoginRegister';
+import Search from './components/Search';
+import './index.css';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <h1 className="text-3xl font-bold text-blue-600">Hello, Tailwind CSS</h1>
-    </>
-  )
+    <Router>
+      <Navbar />
+      <div className="">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/explore" element={<ListingExplore />} />
+          <Route path="/contact" element={<ContactUs />} />
+          <Route path="/login" element={<LoginRegister />} />
+          <Route path="/search" element={<Search />} />
+        </Routes>
+      </div>
+      <Footer />
+    </Router>
+  );
 }
 
-export default App
+export default App;
