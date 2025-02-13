@@ -1,13 +1,13 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Navbar from './Components/Navbar';
-import Footer from './Components/Footer';
-import Home from './Components/Home';
-import ListingExplore from './components/ListingExplore';
-import ContactUs from './components/ContactUs';
-import LoginRegister from './Components/LoginRegister';
-import Search from './components/Search';
-import './index.css';
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Navbar from "./Components/Navbar";
+import Footer from "./Components/Footer";
+import Home from "./Components/Home";
+import ListingExplore from "./Components/ListingExplore";
+import ContactUs from "./Components/ContactUs";
+import LoginRegister from "./Components/LoginRegister";
+import Search from "./Components/Search";
+import "./index.css";
 
 function App() {
   return (
