@@ -26,3 +26,10 @@
   clip: rect(0, 0, 0, 0);
   border: 0;
 }
+.property-card {
+  transition: transform 0.2s;
+}
+
+.property-card:hover {
+  transform: scale(1.05);
+}

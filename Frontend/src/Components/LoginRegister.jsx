@@ -5,25 +5,34 @@ import './animations.css'; // Import the custom CSS for animations
 
 const LoginRegister = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [isBlurred, setIsBlurred] = useState(false);
+
+  const handleToggle = (isLogin) => {
+    setIsBlurred(true);
+    setTimeout(() => {
+      setIsLogin(isLogin);
+      setIsBlurred(false);
+    }, 500);
+  };
 
   return (
-    <div className="min-h-dvh flex pt-[100px] justify-center bg-gray-100">
-      <div className="w-full max-w-md relative">
+    <div className="min-h-dvh flex pt-[100px] justify-center bg-[url('/src/assets/bg2.jpg')] bg-cover bg-center">
+      <div className={`w-full max-w-4xl bg-black/30 backdrop-blur-md shadow-lg rounded-lg p-6 md:p-10 flex flex-col transition-all duration-500 ease-in-out ${isLogin ? 'h-[450px]' : 'h-[650px]'}`}>
         <div className="flex justify-center mb-4">
           <button
-            onClick={() => setIsLogin(true)}
-            className={`px-4 py-2 font-medium ${isLogin ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-500'}`}
+            onClick={() => handleToggle(true)}
+            className={`px-4 py-2 font-medium ${isLogin ? 'text-violet-200 border-b-2 border-white' : 'text-gray-300'}`}
           >
             Login
           </button>
           <button
-            onClick={() => setIsLogin(false)}
-            className={`px-4 py-2 font-medium ${!isLogin ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-500'}`}
+            onClick={() => handleToggle(false)}
+            className={`px-4 py-2 font-medium ${!isLogin ? 'text-violet-200 border-b-2 border-white' : 'text-gray-300'}`}
           >
             Register
           </button>
         </div>
-        <div className="relative h-64 ">
+        <div className="relative">
           <div className={`absolute inset-0 transition-all mb-5 duration-500 ease-in-out ${isLogin ? 'slide-in-reverse' : 'slide-out-reverse'}`}>
             {isLogin && <Login />}
           </div>

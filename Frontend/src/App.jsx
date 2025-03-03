@@ -6,25 +6,41 @@ import Home from "./Components/Home";
 import ListingExplore from "./Components/ListingExplore";
 import ContactUs from "./Components/ContactUs";
 import LoginRegister from "./Components/LoginRegister";
+import ForgotPassword from "./Components/ForgotPassword"; 
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Search from "./Components/Search";
 import "./index.css";
 
 function App() {
   return (
+    <div className="min-h-lvh flex flex-col ">
     <Router>
       <Navbar />
-      <div className="">
+      
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/home" element={<Home />} />
           <Route path="/explore" element={<ListingExplore />} />
           <Route path="/contact" element={<ContactUs />} />
           <Route path="/login" element={<LoginRegister />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} /> 
           <Route path="/search" element={<Search />} />
         </Routes>
-      </div>
+     
       <Footer />
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+        theme="light"
+      />
+  
     </Router>
+    </div>
   );
 }
 
