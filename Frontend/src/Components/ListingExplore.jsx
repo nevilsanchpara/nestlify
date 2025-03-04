@@ -15,7 +15,8 @@ const ListingExplore = () => {
         const response = await axios.get('https://nestlify-xelq.vercel.app/api/properties');
         setProperties(response.data);
         const geocodedPositions = await Promise.all(response.data.map(geocodeAddress));
-        setPositions(geocodedPositions.filter(position => position !== null));
+        const validPositions = geocodedPositions.filter(position => position !== null);
+        setPositions(validPositions);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching properties', error);
@@ -36,7 +37,7 @@ const ListingExplore = () => {
         console.error('No results found for address:', address);
       }
     } catch (error) {
-      console.error('Error geocoding address', error);
+      console.error('Error geocoding address:', address, error);
     }
     return null;
   };

@@ -10,6 +10,7 @@ import ForgotPassword from "./Components/ForgotPassword";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Search from "./Components/Search";
+import AdminPortal from "./Components/AdminPortal";
 import "./index.css";
 
 function App() {
@@ -17,7 +18,7 @@ function App() {
     <div className="min-h-lvh flex flex-col ">
     <Router>
       <Navbar />
-      
+      <div className="pt-16">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/home" element={<Home />} />
@@ -26,8 +27,10 @@ function App() {
           <Route path="/login" element={<LoginRegister />} />
           <Route path="/forgot-password" element={<ForgotPassword />} /> 
           <Route path="/search" element={<Search />} />
+          <Route path="/admin" element={<AdminPortal />} />
+          
         </Routes>
-     
+        </div>
       <Footer />
       <ToastContainer
         position="top-right"
