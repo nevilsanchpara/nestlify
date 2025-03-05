@@ -66,25 +66,35 @@ const AdminPropertyForm = ({ property, onClose, onSave }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append('address', formData.address);
-    formData.append('description', formData.description);
-    formData.append('purchasePrice', formData.purchasePrice);
-    formData.append('numBeds', formData.numBeds);
-    formData.append('numBaths', formData.numBaths);
-    formData.append('propertyType', formData.propertyType);
-    formData.append('city', formData.city);
-    formData.append('sqft', formData.sqft);
+    const data = new FormData();
+    data.append('address', formData.address);
+    data.append('description', formData.description);
+    data.append('purchasePrice', formData.purchasePrice);
+    data.append('numBeds', formData.numBeds);
+    data.append('numBaths', formData.numBaths);
+    data.append('propertyType', formData.propertyType);
+    data.append('city', formData.city);
+    data.append('sqft', formData.sqft);
     for (let i = 0; i < images.length; i++) {
-      formData.append('photos', images[i]);
+      data.append('photos', images[i]);
     }
+
+    const token = sessionStorage.getItem('token');
 
     try {
       if (property._id) {
-        const response = await axios.put(`https://nestlify-xelq.vercel.app/api/properties/${property._id}`, formData);
+        const response = await axios.put(
+          `https://nestlify-xelq.vercel.app/api/properties/${property._id}`, 
+          data, 
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
         onSave(response.data);
       } else {
-        const response = await axios.post('https://nestlify-xelq.vercel.app/api/properties', formData);
+        const response = await axios.post(
+          'https://nestlify-xelq.vercel.app/api/properties', 
+          data, 
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
         onSave(response.data);
       }
     } catch (error) {
