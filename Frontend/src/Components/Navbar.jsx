@@ -25,7 +25,7 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 w-full bg-white/50 dark:bg-gray-900/50 backdrop-blur-md shadow-md z-50 transition-colors">
+    <nav className="fixed top-0 left-0 w-full bg-white/50 dark:bg-gray-900/80 backdrop-blur-md shadow-md z-50 transition-colors">
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
         <motion.div whileHover={{ scale: 1.1 }} className="text-2xl font-extrabold text-gray-900 dark:text-white">
           Nestlify
