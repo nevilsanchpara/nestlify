@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -8,6 +8,7 @@ const ListingExplore = () => {
   const [properties, setProperties] = useState([]);
   const [positions, setPositions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const markerRefs = useRef([]);
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -29,9 +30,9 @@ const ListingExplore = () => {
   const geocodeAddress = async (property) => {
     const address = property.address;
     try {
-      const response = await axios.get(`https://nominatim.openstreetmap.org/search?format=json&q=${address}`);
-      if (response.data && response.data.length > 0) {
-        const { lat, lon } = response.data[0];
+      const response = await axios.get(`https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(address)}&apiKey=70206657263b425b8ad95de27ea1f3da`);
+      if (response.data && response.data.features && response.data.features.length > 0) {
+        const { lat, lon } = response.data.features[0].properties;
         return { lat: parseFloat(lat), lon: parseFloat(lon), property };
       } else {
         console.error('No results found for address:', address);
@@ -51,6 +52,10 @@ const ListingExplore = () => {
     shadowSize: [41, 41]
   });
 
+  const handleCardClick = (index) => {
+    markerRefs.current[index].openPopup();
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center bg-gray-100">
       <h1 className="text-4xl font-bold my-8">Explore Listings</h1>
@@ -64,10 +69,15 @@ const ListingExplore = () => {
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
             {positions.map((position, index) => (
-              <Marker key={index} position={[position.lat, position.lon]} icon={defaultIcon}>
+              <Marker
+                key={index}
+                position={[position.lat, position.lon]}
+                icon={defaultIcon}
+                ref={(el) => (markerRefs.current[index] = el)}
+              >
                 <Popup>
                   <div>
-                    <h2>{position.property.address}</h2>
+                    <h2>{`${position.property.address} #1 #2 #3`}</h2>
                     <p><strong>Price:</strong> ${position.property.purchasePrice}</p>
                     <p><strong>Bedrooms:</strong> {position.property.numBeds}</p>
                     <p><strong>Bathrooms:</strong> {position.property.numBaths}</p>
@@ -80,8 +90,12 @@ const ListingExplore = () => {
         )}
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 p-4">
-        {properties.map(property => (
-          <div key={property._id} className="property-card border rounded-lg shadow-lg overflow-hidden">
+        {properties.map((property, index) => (
+          <div
+            key={property._id}
+            className="property-card border rounded-lg shadow-lg overflow-hidden cursor-pointer"
+            onClick={() => handleCardClick(index)}
+          >
             {property.photos && property.photos.length > 0 && (
               <img src={property.photos[0]} alt={property.address} className="w-full h-48 object-cover" />
             )}

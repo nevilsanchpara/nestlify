@@ -6,7 +6,7 @@ import StatsCounter from './StatsCounter';
 
 const Home = () => {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 -mt-20">
       <HeroSection />
       <PopularCities />
       <StatsCounter />
