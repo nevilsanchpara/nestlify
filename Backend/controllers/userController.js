@@ -62,9 +62,9 @@ exports.loginUser = async (req, res) => {
     if (!user.isVerified)
       return res.status(400).json({ message: "Email not verified" });
 
-    const secretKey = "yourSecretKey";
+    const secretKey = "nestlify_secret_key_project";
     const options = {
-      expiresIn: "5h", // Token expiration time
+      expiresIn: "24h", // Token expiration time
     };
 
     const token = jwt.sign({ _id: user._id }, secretKey, options);
@@ -105,13 +105,16 @@ exports.verifyEmail = async (req, res) => {
 // @desc    Forgot Password
 exports.forgotPassword = async (req, res) => {
   try {
+    console.log("extra");
     const user = await User.findOne({ email: req.body.email });
+    console.log(user);
     if (!user) return res.status(400).json({ message: "User not found" });
 
     user.generatePasswordResetToken();
     await user.save();
+    console.log("hi");
 
-    const resetLink = `${process.env.BASE_URL}/api/users/reset-password/${user.resetPasswordToken}`;
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password/${user.resetPasswordToken}`;
     await transporter.sendMail({
       to: user.email,
       subject: "Reset Your Password",
@@ -120,6 +123,7 @@ exports.forgotPassword = async (req, res) => {
 
     res.json({ message: "Password reset email sent" });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -128,14 +132,14 @@ exports.forgotPassword = async (req, res) => {
 exports.resetPassword = async (req, res) => {
   try {
     const user = await User.findOne({
-      resetPasswordToken: req.params.token,
+      resetPasswordToken: req.body.token,
       resetPasswordExpires: { $gt: Date.now() },
     });
 
     if (!user)
       return res.status(400).json({ message: "Invalid or expired token" });
 
-    user.password = req.body.password;
+    user.password = bcrypt.hash(req.body.password, 10);
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
     await user.save();
