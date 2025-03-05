@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Stepper, Step, StepLabel, Button, TextField, Typography, Box } from '@mui/material';
 
 const AdminPropertyForm = ({ property, onClose, onSave }) => {
   const [formData, setFormData] = useState({
@@ -15,6 +16,10 @@ const AdminPropertyForm = ({ property, onClose, onSave }) => {
 
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [images, setImages] = useState([]);
+  const [activeStep, setActiveStep] = useState(0);
+
+  const steps = ['Property Details', 'Property Features', 'Upload Images'];
 
   useEffect(() => {
     if (formData.address.length > 2) {
@@ -38,17 +43,42 @@ const AdminPropertyForm = ({ property, onClose, onSave }) => {
     setFormData({ ...formData, [name]: value });
   };
 
+  const handleImageChange = (e) => {
+    setImages(e.target.files);
+  };
+
   const handleSuggestionClick = (suggestion) => {
-    setFormData({ 
-      ...formData, 
+    setFormData({
+      ...formData,
       address: suggestion.properties.formatted,
       city: suggestion.properties.city || suggestion.properties.county || suggestion.properties.state || '' // Fill city field
     });
     setShowSuggestions(false);
   };
 
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    formData.append('address', formData.address);
+    formData.append('description', formData.description);
+    formData.append('purchasePrice', formData.purchasePrice);
+    formData.append('numBeds', formData.numBeds);
+    formData.append('numBaths', formData.numBaths);
+    formData.append('propertyType', formData.propertyType);
+    formData.append('city', formData.city);
+    formData.append('sqft', formData.sqft);
+    for (let i = 0; i < images.length; i++) {
+      formData.append('photos', images[i]);
+    }
+
     try {
       if (property._id) {
         const response = await axios.put(`https://nestlify-xelq.vercel.app/api/properties/${property._id}`, formData);
@@ -62,19 +92,18 @@ const AdminPropertyForm = ({ property, onClose, onSave }) => {
     }
   };
 
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-8 rounded shadow-lg w-96">
-        <h2 className="text-2xl font-bold mb-4">{property._id ? 'Edit Property' : 'Add Property'}</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4 relative">
-            <label className="block mb-1">Address</label>
-            <input
-              type="text"
+  const getStepContent = (step) => {
+    switch (step) {
+      case 0:
+        return (
+          <Box>
+            <TextField
+              label="Address"
               name="address"
               value={formData.address}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded"
+              fullWidth
+              margin="normal"
               required
             />
             {showSuggestions && (
@@ -90,99 +119,133 @@ const AdminPropertyForm = ({ property, onClose, onSave }) => {
                 ))}
               </ul>
             )}
-          </div>
-          <div className="mb-4">
-            <label className="block mb-1">Description</label>
-            <input
-              type="text"
+            <TextField
+              label="Description"
               name="description"
               value={formData.description}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded"
+              fullWidth
+              margin="normal"
               required
             />
-          </div>
-          <div className="mb-4">
-            <label className="block mb-1">Purchase Price</label>
-            <input
-              type="number"
+            <TextField
+              label="Purchase Price"
               name="purchasePrice"
               value={formData.purchasePrice}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded"
+              type="number"
+              fullWidth
+              margin="normal"
               required
             />
-          </div>
-          <div className="mb-4">
-            <label className="block mb-1">Bedrooms</label>
-            <input
-              type="number"
+          </Box>
+        );
+      case 1:
+        return (
+          <Box>
+            <TextField
+              label="Bedrooms"
               name="numBeds"
               value={formData.numBeds}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded"
+              type="number"
+              fullWidth
+              margin="normal"
               required
             />
-          </div>
-          <div className="mb-4">
-            <label className="block mb-1">Bathrooms</label>
-            <input
-              type="number"
+            <TextField
+              label="Bathrooms"
               name="numBaths"
               value={formData.numBaths}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded"
+              type="number"
+              fullWidth
+              margin="normal"
               required
             />
-          </div>
-          <div className="mb-4">
-            <label className="block mb-1">Property Type</label>
-            <input
-              type="text"
+            <TextField
+              label="Property Type"
               name="propertyType"
               value={formData.propertyType}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded"
+              fullWidth
+              margin="normal"
               required
             />
-          </div>
-          <div className="mb-4">
-            <label className="block mb-1">City</label>
-            <input
-              type="text"
+            <TextField
+              label="City"
               name="city"
               value={formData.city}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded"
+              fullWidth
+              margin="normal"
               required
             />
-          </div>
-          <div className="mb-4">
-            <label className="block mb-1">Square Feet</label>
-            <input
-              type="number"
+            <TextField
+              label="Square Feet"
               name="sqft"
               value={formData.sqft}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded"
+              type="number"
+              fullWidth
+              margin="normal"
               required
             />
-          </div>
-          <div className="flex justify-end">
-            <button
-              type="button"
-              onClick={onClose}
-              className="mr-2 px-4 py-2 bg-gray-500 text-white rounded"
+          </Box>
+        );
+      case 2:
+        return (
+          <Box>
+            <Typography>Upload Images</Typography>
+            <input
+              type="file"
+              name="photos"
+              multiple
+              onChange={handleImageChange}
+              className="w-full px-4 py-2 border rounded"
+            />
+          </Box>
+        );
+      default:
+        return 'Unknown step';
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white p-8 rounded shadow-lg w-96">
+        <h2 className="text-2xl font-bold mb-4">{property._id ? 'Edit Property' : 'Add Property'}</h2>
+        <Stepper activeStep={activeStep} alternativeLabel>
+          {steps.map((label) => (
+            <Step key={label}>
+              <StepLabel>{label}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+        <form onSubmit={handleSubmit}>
+          {getStepContent(activeStep)}
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+            <Button
+              disabled={activeStep === 0}
+              onClick={handleBack}
             >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-blue-500 text-white rounded"
+              Back
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={activeStep === steps.length - 1 ? handleSubmit : handleNext}
             >
-              Save
-            </button>
-          </div>
+              {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+            </Button>
+          </Box>
+          <Button
+            type="button"
+            onClick={onClose}
+            className="mr-2 px-4 py-2 bg-gray-500 text-white rounded"
+          >
+            Cancel
+          </Button>
         </form>
       </div>
     </div>

@@ -58,7 +58,6 @@ const ListingExplore = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
-      <h1 className="text-4xl font-bold my-8 text-center">Explore Listings</h1>
       <div className="flex flex-1">
         <div className="w-2/3 z-0" style={{ position: 'relative', height: 'calc(100vh - 64px)' }}>
           {loading ? (
