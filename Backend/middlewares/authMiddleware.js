@@ -11,7 +11,7 @@ exports.protect = async (req, res, next) => {
       req.user = await User.findById(decoded.id).select("-password");
       next();
     } catch (error) {
-      res.status(401).json({ message: "Not authorized, invalid token" });
+      res.status(401).json({ message: "Not authorized, invalid token jwt error" });
     }
   } else {
     res.status(401).json({ message: "Not authorized, no token" });
