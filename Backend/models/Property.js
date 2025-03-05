@@ -12,17 +12,18 @@ const PropertySchema = new mongoose.Schema(
     address: { type: String, required: true },
     availableFrom: { type: Date, required: true },
     photos: [{ type: String }],
-    amenities: {
-      wifi: { type: Boolean, default: false },
-      parking: { type: Boolean, default: false },
-      pool: { type: Boolean, default: false },
-      gym: { type: Boolean, default: false },
-      furnished: { type: Boolean, default: false },
-    },
     bathrooms: { type: Number, required: true },
     bedrooms: { type: Number, required: true },
-    city_id: { type: mongoose.Schema.Types.ObjectId, ref: "City", required: true },
-    postedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    city_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "City",
+      required: true,
+    },
+    postedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
   },
   { timestamps: true }
 );

@@ -32,7 +32,7 @@ router.post("/login", loginUser);
 router.get("/verify/:token", verifyEmail);
 router.post("/forgot-password", forgotPassword);
 router.get("/", getUsers);
-router.post("/reset-password/:token", resetPassword);
+router.post("/reset-password", resetPassword);
 router.post("/upload", protect, upload.single("image"), uploadProfileImage);
 
 module.exports = router;

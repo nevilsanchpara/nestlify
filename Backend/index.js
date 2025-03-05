@@ -5,7 +5,10 @@ const routes = require("./routes");
 const swaggerDocs = require("./utils/swagger");
 const errorHandler = require("./middlewares/errorHandler");
 const cors = require("cors");
+const path = require("path");
 const app = express();
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Middleware
 app.use(express.json());
