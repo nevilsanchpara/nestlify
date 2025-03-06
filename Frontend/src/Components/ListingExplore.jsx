@@ -94,11 +94,12 @@ const ListingExplore = () => {
         </div>
 
         {/* Property Cards (List) */}
-        <div className="w-1/3 overflow-y-scroll p-6" style={{ height: "calc(100vh - 64px)" }}>
-          {properties.map((property, index) => (
-            <PropertyCard key={property._id} property={property} onClick={() => handleCardClick(index)} />
-          ))}
-        </div>
+        <div className="w-1/3 overflow-y-scroll p-6 my-5" style={{ height: "calc(100vh - 64px)" }}>
+  {properties.map((property, index) => (
+    <PropertyCard key={property._id} property={property} onClick={() => handleCardClick(index)} />
+  ))}
+</div>
+
       </div>
     </div>
   );

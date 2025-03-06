@@ -1,15 +1,42 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
-import { FaBath, FaBed, FaMapMarkerAlt } from "react-icons/fa";
+import { FaBath, FaBed, FaMapMarkerAlt, FaHeart } from "react-icons/fa";
 import "swiper/css";
 import "swiper/css/navigation";
 
-const PropertyCard = ({ property }) => {
+const PropertyCard = ({ property, onClick }) => {
+  const [isWishlisted, setIsWishlisted] = useState(false);
+
+  useEffect(() => {
+    const savedWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+    setIsWishlisted(savedWishlist.includes(property._id));
+  }, [property._id]);
+
+  const toggleWishlist = (e) => {
+    e.stopPropagation();
+    let savedWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+    if (isWishlisted) {
+      savedWishlist = savedWishlist.filter((id) => id !== property._id);
+    } else {
+      savedWishlist.push(property._id);
+    }
+    localStorage.setItem("wishlist", JSON.stringify(savedWishlist));
+    setIsWishlisted(!isWishlisted);
+  };
+
   return (
-    <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+    <div className="bg-white rounded-lg shadow-lg overflow-hidden relative cursor-pointer transition-transform transform hover:scale-105" onClick={onClick}>
       
+      {/* Wishlist Button (Now Clearly Visible on Top Right) */}
+      <button
+        onClick={toggleWishlist}
+        className="absolute top-4 right-4 bg-white p-2 rounded-full shadow-lg z-10 hover:scale-110 transition-transform"
+      >
+        <FaHeart className={isWishlisted ? "text-red-600" : "text-gray-400"} size={22} />
+      </button>
+
       {/* Image Carousel */}
       <Swiper navigation modules={[Navigation]} className="w-full h-64">
         {property.photos.map((photo, index) => (
