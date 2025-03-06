@@ -11,6 +11,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Search from "./Components/Search";
 import AdminPortal from "./Components/AdminPortal";
+import PropertyDetailsPage from "./Components/PropertyDetailsPage";
 import "./index.css";
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} /> 
           <Route path="/search" element={<Search />} />
           <Route path="/admin" element={<AdminPortal />} />
+          <Route path="/property/:id" element={<PropertyDetailsPage/>} />
           
         </Routes>
         </div>
