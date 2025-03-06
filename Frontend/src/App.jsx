@@ -31,7 +31,7 @@ function App() {
           <Route path="/search" element={<Search />} />
           <Route path="/admin" element={<AdminPortal />} />
           <Route path="/property/:id" element={<PropertyDetailsPage/>} />
-          <Route path="/reset-password/:token" element={<ResetPasswordPage/>} />
+          <Route path="/reset-password/:token  " element={<ResetPasswordPage/>} />
           
         </Routes>
         </div>

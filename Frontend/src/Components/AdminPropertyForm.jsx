@@ -1,25 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Stepper, Step, StepLabel, Button, TextField, Typography, Box } from '@mui/material';
+import { Stepper, Step, StepLabel, Button, TextField, Typography, Box, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 
 const AdminPropertyForm = ({ property, onClose, onSave }) => {
   const [formData, setFormData] = useState({
-    address: property.address || '',
+    title: property.title || '',
+    price: property.price || '',
     description: property.description || '',
-    purchasePrice: property.purchasePrice || '',
-    numBeds: property.numBeds || '',
-    numBaths: property.numBaths || '',
-    propertyType: property.propertyType || '',
-    city: property.city || '',
-    sqft: property.sqft || ''
+    lat: property.coordinates ? property.coordinates.lat : '',
+    long: property.coordinates ? property.coordinates.long : '',
+    address: property.address || '',
+    availableFrom: property.availableFrom || '',
+    bathrooms: property.bathrooms || '',
+    bedrooms: property.bedrooms || '',
+    city_id: property.city_id || '',
+    photos: property.photos || [],
   });
 
+  const [cities, setCities] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [images, setImages] = useState([]);
   const [activeStep, setActiveStep] = useState(0);
 
   const steps = ['Property Details', 'Property Features', 'Upload Images'];
+
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        const response = await axios.get('https://nestlify-xelq.vercel.app/api/city');
+        setCities(response.data);
+      } catch (error) {
+        console.error('Error fetching cities', error);
+      }
+    };
+
+    fetchCities();
+  }, []);
 
   useEffect(() => {
     if (formData.address.length > 2) {
@@ -51,7 +68,8 @@ const AdminPropertyForm = ({ property, onClose, onSave }) => {
     setFormData({
       ...formData,
       address: suggestion.properties.formatted,
-      city: suggestion.properties.city || suggestion.properties.county || suggestion.properties.state || '' // Fill city field
+      lat: suggestion.properties.lat,
+      long: suggestion.properties.lon,
     });
     setShowSuggestions(false);
   };
@@ -67,14 +85,16 @@ const AdminPropertyForm = ({ property, onClose, onSave }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = new FormData();
-    data.append('address', formData.address);
+    data.append('title', formData.title);
+    data.append('price', formData.price);
     data.append('description', formData.description);
-    data.append('purchasePrice', formData.purchasePrice);
-    data.append('numBeds', formData.numBeds);
-    data.append('numBaths', formData.numBaths);
-    data.append('propertyType', formData.propertyType);
-    data.append('city', formData.city);
-    data.append('sqft', formData.sqft);
+    data.append('lat', formData.lat);
+    data.append('long', formData.long);
+    data.append('address', formData.address);
+    data.append('availableFrom', formData.availableFrom);
+    data.append('bathrooms', formData.bathrooms);
+    data.append('bedrooms', formData.bedrooms);
+    data.append('city_id', formData.city_id);
     for (let i = 0; i < images.length; i++) {
       data.append('photos', images[i]);
     }
@@ -108,6 +128,34 @@ const AdminPropertyForm = ({ property, onClose, onSave }) => {
         return (
           <Box>
             <TextField
+              label="Title"
+              name="title"
+              value={formData.title}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+              required
+            />
+            <TextField
+              label="Price"
+              name="price"
+              value={formData.price}
+              onChange={handleChange}
+              type="number"
+              fullWidth
+              margin="normal"
+              required
+            />
+            <TextField
+              label="Description"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+              required
+            />
+            <TextField
               label="Address"
               name="address"
               value={formData.address}
@@ -130,23 +178,37 @@ const AdminPropertyForm = ({ property, onClose, onSave }) => {
               </ul>
             )}
             <TextField
-              label="Description"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              fullWidth
-              margin="normal"
-              required
-            />
-            <TextField
-              label="Purchase Price"
-              name="purchasePrice"
-              value={formData.purchasePrice}
+              label="Latitude"
+              name="lat"
+              value={formData.lat}
               onChange={handleChange}
               type="number"
               fullWidth
               margin="normal"
               required
+            />
+            <TextField
+              label="Longitude"
+              name="long"
+              value={formData.long}
+              onChange={handleChange}
+              type="number"
+              fullWidth
+              margin="normal"
+              required
+            />
+            <TextField
+              label="Available From"
+              name="availableFrom"
+              value={formData.availableFrom}
+              onChange={handleChange}
+              type="date"
+              fullWidth
+              margin="normal"
+              required
+              InputLabelProps={{
+                shrink: true,
+              }}
             />
           </Box>
         );
@@ -154,19 +216,9 @@ const AdminPropertyForm = ({ property, onClose, onSave }) => {
         return (
           <Box>
             <TextField
-              label="Bedrooms"
-              name="numBeds"
-              value={formData.numBeds}
-              onChange={handleChange}
-              type="number"
-              fullWidth
-              margin="normal"
-              required
-            />
-            <TextField
               label="Bathrooms"
-              name="numBaths"
-              value={formData.numBaths}
+              name="bathrooms"
+              value={formData.bathrooms}
               onChange={handleChange}
               type="number"
               fullWidth
@@ -174,33 +226,31 @@ const AdminPropertyForm = ({ property, onClose, onSave }) => {
               required
             />
             <TextField
-              label="Property Type"
-              name="propertyType"
-              value={formData.propertyType}
-              onChange={handleChange}
-              fullWidth
-              margin="normal"
-              required
-            />
-            <TextField
-              label="City"
-              name="city"
-              value={formData.city}
-              onChange={handleChange}
-              fullWidth
-              margin="normal"
-              required
-            />
-            <TextField
-              label="Square Feet"
-              name="sqft"
-              value={formData.sqft}
+              label="Bedrooms"
+              name="bedrooms"
+              value={formData.bedrooms}
               onChange={handleChange}
               type="number"
               fullWidth
               margin="normal"
               required
             />
+            <FormControl fullWidth margin="normal" required>
+              <InputLabel id="city-label">City</InputLabel>
+              <Select
+                labelId="city-label"
+                name="city_id"
+                value={formData.city_id}
+                onChange={handleChange}
+                label="City"
+              >
+                {cities.map((city) => (
+                  <MenuItem key={city._id} value={city._id}>
+                    {city.city}, {city.province}, {city.country}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Box>
         );
       case 2:
