@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
 
   const handleLogin = async (e) => {
@@ -12,10 +13,8 @@ const Login = () => {
     try {
       const response = await axios.post('https://nestlify-xelq.vercel.app/api/users/login', { email, password });
       const { token, user } = response.data;
-      // Store token and user information in session storage
       sessionStorage.setItem('token', token);
       sessionStorage.setItem('user', JSON.stringify(user));
-      // Redirect to home page
       alert('Login successful');
       window.location.href = '/';
     } catch (err) {
@@ -34,7 +33,8 @@ const Login = () => {
         </div>
         <div className="mb-4">
           <label htmlFor="password" className="block text-sm font-medium text-gray-300">Password:</label>
-          <input type="password" id="password" name="password" required value={password} onChange={(e) => setPassword(e.target.value)} className="mt-1 block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+          <input type={showPassword ? 'text' : 'password'} id="password" name="password" required value={password} onChange={(e) => setPassword(e.target.value)} className="mt-1 block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+          <button type="button" onClick={() => setShowPassword(!showPassword)}>{showPassword ? 'Hide' : 'Show'}</button>
         </div>
         <button type="submit" className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Login</button>
       </form>
