@@ -13,6 +13,7 @@ import Search from "./Components/Search";
 import AdminPortal from "./Components/AdminPortal";
 import PropertyDetailsPage from "./Components/PropertyDetailsPage";
 import "./index.css";
+import ResetPasswordPage from './Components/ResetPasswordPage';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route path="/search" element={<Search />} />
           <Route path="/admin" element={<AdminPortal />} />
           <Route path="/property/:id" element={<PropertyDetailsPage/>} />
+          <Route path="/reset-password/:token" component={ResetPasswordPage} />
           
         </Routes>
         </div>
