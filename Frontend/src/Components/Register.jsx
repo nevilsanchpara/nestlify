@@ -4,7 +4,7 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-
+const apiUrl = import.meta.env.VITE_API_URL;
 const schema = yup.object().shape({
   firstName: yup.string().required('First Name is required'),
   lastName: yup.string().required('Last Name is required'),
@@ -21,7 +21,7 @@ const Register = () => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post('http://localhost:8080/api/users/register', data);
+      const response = await axios.post(`${apiUrl}/api/users/register`, data);
       alert('Registration successful');
       window.location.href = '/login';
     } catch (err) {

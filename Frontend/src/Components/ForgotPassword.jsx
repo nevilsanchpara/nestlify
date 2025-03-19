@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-
+const apiUrl = import.meta.env.VITE_API_URL;
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
@@ -8,7 +8,7 @@ const ForgotPassword = () => {
   const handleForgotPassword = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8080/api/users/forgot-password', { email });
+      const response = await axios.post(`${apiUrl}/api/users/forgot-password`, { email });
       setMessage(response.data.message);
     } catch (error) {
       setMessage('Failed to send password reset email');

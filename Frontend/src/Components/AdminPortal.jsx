@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import AdminPropertyForm from './AdminPropertyForm';
-
+const apiUrl = import.meta.env.VITE_API_URL;
 const AdminPortal = () => {
   const [properties, setProperties] = useState([]);
   const [editingProperty, setEditingProperty] = useState(null);
@@ -10,7 +10,7 @@ const AdminPortal = () => {
     const fetchProperties = async () => {
       try {
         const token = sessionStorage.getItem('token');
-        const response = await axios.get('http://localhost:8080/api/properties', {
+        const response = await axios.get(`${apiUrl}/api/properties`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -27,7 +27,7 @@ const AdminPortal = () => {
   const handleDelete = async (propertyId) => {
     try {
       const token = sessionStorage.getItem('token');
-      await axios.delete(`http://localhost:8080/api/properties/${propertyId}`, {
+      await axios.delete(`${apiUrl}/api/properties/${propertyId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-
+const apiUrl = import.meta.env.VITE_API_URL;
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
@@ -9,7 +9,7 @@ const ForgotPasswordPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('https://nestlify.vercel.app/api/users/forgot-password', { email });
+      const response = await axios.post(`${apiUrl}/api/users/forgot-password`, { email });
       setMessage(response.data.message);
       setError('');
     } catch (err) {

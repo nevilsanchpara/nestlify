@@ -6,7 +6,7 @@ import { Navigation } from 'swiper/modules';
 import 'swiper/css'; // Updated import path for swiper styles
 import 'swiper/css/navigation'; // Import navigation styles
 import 'swiper/css/pagination'; // Import pagination styles (if needed)
-
+const apiUrl = import.meta.env.VITE_API_URL;
 const PropertyDetailsPage = () => {
   const { id } = useParams();
   const [property, setProperty] = useState(null);
@@ -15,7 +15,7 @@ const PropertyDetailsPage = () => {
   useEffect(() => {
     const fetchProperty = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/properties/${id}`);
+        const response = await fetch(`${apiUrl}/api/properties/${id}`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }

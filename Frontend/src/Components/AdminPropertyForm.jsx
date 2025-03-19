@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Stepper, Step, StepLabel, Button, TextField, Typography, Box, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
-
+const apiUrl = import.meta.env.VITE_API_URL;
+const geoapifyApiKey = import.meta.env.VITE_GEOAPIFY_API_KEY;
 const AdminPropertyForm = ({ property, onClose, onSave }) => {
   const [formData, setFormData] = useState({
     title: property.title || '',
@@ -28,7 +29,7 @@ const AdminPropertyForm = ({ property, onClose, onSave }) => {
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/api/city');
+        const response = await axios.get(`${apiUrl}/city`);
         setCities(response.data);
       } catch (error) {
         console.error('Error fetching cities', error);
@@ -42,7 +43,7 @@ const AdminPropertyForm = ({ property, onClose, onSave }) => {
     if (formData.address.length > 2) {
       const fetchSuggestions = async () => {
         try {
-          const response = await axios.get(`https://api.geoapify.com/v1/geocode/autocomplete?text=${formData.address}&apiKey=70206657263b425b8ad95de27ea1f3da`);
+          const response = await axios.get(`https://api.geoapify.com/v1/geocode/autocomplete?text=${formData.address}&apiKey=${geoapifyApiKey}`);
           setSuggestions(response.data.features);
           setShowSuggestions(true);
         } catch (error) {
@@ -104,14 +105,14 @@ const AdminPropertyForm = ({ property, onClose, onSave }) => {
     try {
       if (property._id) {
         const response = await axios.put(
-          `http://localhost:8080/api/properties/${property._id}`, 
+          `${apiUrl}/api/properties/${property._id}`, 
           data, 
           { headers: { Authorization: `Bearer ${token}` } }
         );
         onSave(response.data);
       } else {
         const response = await axios.post(
-          'http://localhost:8080/api/properties', 
+          `${apiUrl}/api/properties`, 
           data, 
           { headers: { Authorization: `Bearer ${token}` } }
         );

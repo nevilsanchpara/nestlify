@@ -5,7 +5,7 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-
+const apiUrl = import.meta.env.VITE_API_URL;
 const schema = yup.object().shape({
   email: yup.string().email('Invalid email format').required('Email is required'),
   password: yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
@@ -19,7 +19,7 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post('http://localhost:8080/api/users/login', data);
+      const response = await axios.post(`${apiUrl}/api/users/login`, data);
       const { token, user } = response.data;
       sessionStorage.setItem('token', token);
       sessionStorage.setItem('user', JSON.stringify(user));
