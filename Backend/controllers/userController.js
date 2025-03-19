@@ -31,7 +31,7 @@ exports.registerUser = async (req, res) => {
     await user.save();
     console.log(user);
 
-    const verificationLink = `https://nestlify-xelq.vercel.app/api/users/verify/${user.emailVerificationToken}`;
+    const verificationLink = `${process.env.BASE_URL}/api/users/verify/${user.emailVerificationToken}`;
     await transporter.sendMail({
       to: user.email,
       subject: "Verify Your Email",
@@ -68,7 +68,7 @@ exports.loginUser = async (req, res) => {
     };
 
     const token = jwt.sign({ _id: user._id }, secretKey, options);
-    res.json({ token });
+    res.json({ token, user });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: error.message });
@@ -114,7 +114,7 @@ exports.forgotPassword = async (req, res) => {
     await user.save();
     console.log("hi");
 
-    const resetLink = `https://nestlify.vercel.app/reset-password/${user.resetPasswordToken}`;
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password/${user.resetPasswordToken}`;
     await transporter.sendMail({
       to: user.email,
       subject: "Reset Your Password",

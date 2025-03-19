@@ -1,6 +1,7 @@
 const Property = require("../models/Property");
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
+const City = require("../models/City");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 require("dotenv").config();
 
@@ -19,7 +20,7 @@ const storage = new CloudinaryStorage({
   },
 });
 
-const upload = multer({ storage }).array("photos", 5); // Max 5 images
+const upload = multer({ storage }).array("photos", 5);
 
 exports.createProperty = async (req, res) => {
   upload(req, res, async function (err) {
@@ -42,10 +43,7 @@ exports.createProperty = async (req, res) => {
         city_id,
       } = req.body;
 
-      // Handle uploaded files (Photos)
-      const photos = req.files
-        ? req.files.map((file) => file.path) // Cloudinary URL
-        : [];
+      const photos = req.files ? req.files.map((file) => file.path) : [];
 
       console.log("Uploaded Files:", photos);
 
@@ -59,7 +57,7 @@ exports.createProperty = async (req, res) => {
         bathrooms,
         bedrooms,
         city_id,
-        photos: photos, // Array of image URLs from Cloudinary
+        photos: photos,
         postedBy: req.user.id,
       });
 
@@ -74,9 +72,32 @@ exports.createProperty = async (req, res) => {
 // @desc    Get All Properties
 exports.getAllProperties = async (req, res) => {
   try {
-    const properties = await Property.find()
+    const { minPrice, maxPrice, bedrooms, bathrooms, city, availableFrom } =
+      req.query;
+
+    let filters = {};
+
+    if (minPrice) filters.price = { ...filters.price, $gte: Number(minPrice) };
+    if (maxPrice) filters.price = { ...filters.price, $lte: Number(maxPrice) };
+    if (bedrooms) filters.bedrooms = Number(bedrooms);
+    if (bathrooms) filters.bathrooms = Number(bathrooms);
+    if (city) {
+      const cityDoc = await City.findOne({
+        city: { $regex: new RegExp(city, "i") },
+      });
+      if (cityDoc) {
+        filters.city_id = cityDoc._id;
+      } else {
+        return res.json([]);
+      }
+    }
+    if (availableFrom)
+      filters.availableFrom = { $gte: new Date(availableFrom) };
+
+    const properties = await Property.find(filters)
       .populate("postedBy", "firstName lastName")
       .populate("city_id");
+
     res.json(properties);
   } catch (error) {
     res.status(500).json({ message: error.message });
