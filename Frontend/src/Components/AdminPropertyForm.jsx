@@ -28,7 +28,7 @@ const AdminPropertyForm = ({ property, onClose, onSave }) => {
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const response = await axios.get('https://nestlify-xelq.vercel.app/api/city');
+        const response = await axios.get('http://localhost:8080/api/city');
         setCities(response.data);
       } catch (error) {
         console.error('Error fetching cities', error);
@@ -104,14 +104,14 @@ const AdminPropertyForm = ({ property, onClose, onSave }) => {
     try {
       if (property._id) {
         const response = await axios.put(
-          `https://nestlify-xelq.vercel.app/api/properties/${property._id}`, 
+          `http://localhost:8080/api/properties/${property._id}`, 
           data, 
           { headers: { Authorization: `Bearer ${token}` } }
         );
         onSave(response.data);
       } else {
         const response = await axios.post(
-          'https://nestlify-xelq.vercel.app/api/properties', 
+          'http://localhost:8080/api/properties', 
           data, 
           { headers: { Authorization: `Bearer ${token}` } }
         );

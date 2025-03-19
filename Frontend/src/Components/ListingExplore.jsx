@@ -14,7 +14,7 @@ const ListingExplore = () => {
   useEffect(() => {
     const fetchProperties = async () => {
       try {
-        const response = await axios.get("https://nestlify-xelq.vercel.app/api/properties");
+        const response = await axios.get("http://localhost:8080/api/properties");
         setProperties(response.data);
         const geocodedPositions = await Promise.all(response.data.map(geocodeAddress));
         const validPositions = geocodedPositions.filter((position) => position !== null);

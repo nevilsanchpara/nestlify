@@ -21,7 +21,7 @@ const Register = () => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post('https://nestlify-xelq.vercel.app/api/users/register', data);
+      const response = await axios.post('http://localhost:8080/api/users/register', data);
       alert('Registration successful');
       window.location.href = '/login';
     } catch (err) {

@@ -9,7 +9,12 @@ const AdminPortal = () => {
   useEffect(() => {
     const fetchProperties = async () => {
       try {
-        const response = await axios.get('https://nestlify-xelq.vercel.app/api/properties');
+        const token = sessionStorage.getItem('token');
+        const response = await axios.get('http://localhost:8080/api/properties', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setProperties(response.data);
       } catch (error) {
         console.error('Error fetching properties', error);
@@ -21,7 +26,12 @@ const AdminPortal = () => {
 
   const handleDelete = async (propertyId) => {
     try {
-      await axios.delete(`https://nestlify-xelq.vercel.app/api/properties/${propertyId}`);
+      const token = sessionStorage.getItem('token');
+      await axios.delete(`http://localhost:8080/api/properties/${propertyId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setProperties(properties.filter(property => property._id !== propertyId));
     } catch (error) {
       console.error('Error deleting property', error);
