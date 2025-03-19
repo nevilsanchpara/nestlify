@@ -15,14 +15,14 @@ import PropertyDetailsPage from "./Components/PropertyDetailsPage";
 import "./index.css";
 import ResetPasswordPage from './Components/ResetPasswordPage';
 const apiUrl = import.meta.env.VITE_API_URL;
-console.log('API URL:', apiUrl);
+
 function App() {
   return (
     <div className="min-h-lvh flex flex-col ">
     <Router>
       <Navbar />
       <div className="pt-16">
-      <p>API URL: {apiUrl}</p>
+     
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/home" element={<Home />} />
