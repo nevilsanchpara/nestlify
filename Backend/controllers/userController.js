@@ -8,6 +8,7 @@ const transporter = nodemailer.createTransport({
   auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
 });
 const FRONTEND_URL =  "https://nestlify.vercel.app";
+const VITE_API_URL =  import.meta.env.VITE_API_URL;
 // @desc    Register User
 exports.registerUser = async (req, res) => {
   try {
@@ -31,7 +32,7 @@ exports.registerUser = async (req, res) => {
     await user.save();
     console.log(user);
 
-    const verificationLink = `${FRONTEND_URL}/api/users/verify/${user.emailVerificationToken}`;
+    const verificationLink = `${VITE_API_URL}/api/users/verify/${user.emailVerificationToken}`;
     await transporter.sendMail({
       to: user.email,
       subject: "Verify Your Email",
