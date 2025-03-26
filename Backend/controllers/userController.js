@@ -7,7 +7,6 @@ const transporter = nodemailer.createTransport({
   service: "Gmail",
   auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
 });
-const FRONTEND_URL = import.meta.env.FRONTEND_URL;
 
 // @desc    Register User
 exports.registerUser = async (req, res) => {
@@ -115,7 +114,7 @@ exports.forgotPassword = async (req, res) => {
     await user.save();
     console.log("hi");
 
-    const resetLink = `${FRONTEND_URL}/reset-password/${user.resetPasswordToken}`;
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password/${user.resetPasswordToken}`;
     await transporter.sendMail({
       to: user.email,
       subject: "Reset Your Password",
