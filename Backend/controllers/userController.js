@@ -32,7 +32,7 @@ exports.registerUser = async (req, res) => {
     await user.save();
     console.log(user);
 
-    const verificationLink = `${VITE_API_URL}/api/users/verify/${user.emailVerificationToken}`;
+    const verificationLink = `${FRONTEND_URL}/api/users/verify/${user.emailVerificationToken}`;
     await transporter.sendMail({
       to: user.email,
       subject: "Verify Your Email",
