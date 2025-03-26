@@ -10,6 +10,7 @@ import ForgotPassword from "./Components/ForgotPassword";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Search from "./Components/Search";
+import Verification from "./Components/Verification";
 import AdminPortal from "./Components/AdminPortal";
 import PropertyDetailsPage from "./Components/PropertyDetailsPage";
 import "./index.css";
@@ -34,6 +35,7 @@ function App() {
           <Route path="/admin" element={<AdminPortal />} />
           <Route path="/property/:id" element={<PropertyDetailsPage/>} />
           <Route path="/reset-password/:token" element={<ResetPasswordPage/>} />
+          <Route path="/api/users/verify/:token" element={<Verification/>} />
           
         </Routes>
         </div>
