@@ -1,10 +1,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { Twitter, Instagram, Facebook, Linkedin , Phone , Mail ,MapPin } from 'lucide-react';
+import { Link ,useNavigate } from 'react-router-dom';
+import { Twitter, Instagram, Facebook, Linkedin, Phone, Mail, MapPin } from 'lucide-react';
 import Lottie from 'lottie-react';
 import footerGif from '../assets/footer-gif.json';
+
 const Footer = () => {
+  const navigate = useNavigate();
+
   return (
     <motion.footer
       initial={{ opacity: 0 }}
@@ -16,9 +19,10 @@ const Footer = () => {
         {/* Left Section */}
         <div>
           <h3 className="text-lg font-bold">Stay Connected</h3>
-          <p className="text-gray-400 mt-2">Lorem Ipsum has been the industry's standard.</p>
+          <p className="text-gray-400 mt-2">We make it easy to find affordable homes that fit your needs. Stay updated with the latest listings and housing insights.</p>
           <motion.button
             whileHover={{ scale: 1.1 }}
+            onClick={() => navigate("/about")}
             className="mt-4 bg-white text-gray-900 px-6 py-2 rounded-full shadow-md hover:bg-gray-200"
           >
             Learn More →
@@ -31,36 +35,48 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Middle Section */}
-        <div className="grid grid-cols-2 gap-4">
+        {/* Middle Section - Improved Layout */}
+        <div className="flex flex-col space-y-2 text-gray-400">
+          <h4 className="font-bold text-white">Quick Links</h4>
           {["Home", "About", "Explore", "Contact"].map((link, index) => (
             <Link
               key={index}
               to={`/${link.toLowerCase()}`}
-              className="text-gray-400 hover:text-white transition-all duration-300"
+              className="hover:text-white transition-all duration-300"
             >
               {link}
             </Link>
           ))}
         </div>
 
-        {/* Right Section */}
-        <div>
-          <h4 className="font-bold">Reach Us</h4>
-          <p className="text-gray-400 mt-2"><Phone />+1012 3456 789</p>
-          <p className="text-gray-400 mt-1"><Mail /> demo@gmail.com</p>
-          <p className="text-gray-400 mt-1"><MapPin /> 132 King Street, Ontario, Canada</p>
+        {/* Right Section - Reach Us & Lottie Animation Side by Side */}
+<div className="flex justify-between space-x-6">
+  {/* Contact Details */}
+  <div className="flex flex-col space-y-3">
+    <h4 className="font-bold text-white">Reach Us</h4>
+    <div className="flex items-center space-x-2 text-gray-400">
+      <Phone className="w-5 h-5 text-white" />
+      <span>+1012 3456 789</span>
+    </div>
+    <div className="flex items-center space-x-2 text-gray-400">
+      <Mail className="w-5 h-5 text-white" />
+      <span>demo@gmail.com</span>
+    </div>
+    <div className="flex items-center space-x-2 text-gray-400">
+      <MapPin className="w-5 h-5 text-white" />
+      <span>132 King Street, Ontario, Canada</span>
+    </div>
+  </div>
 
-          {/* Image Placeholder */}
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            className="mt-4 w-64 h-40 border border-gray-600 rounded-lg flex items-center justify-center bg-gray-800"
-          > 
-            <div className="w-48 h-48">
-              <Lottie animationData={footerGif} loop={true} />
-            </div>
-          </motion.div>
-        </div>
+  {/* Lottie Animation */}
+  <motion.div
+    whileHover={{ scale: 1.05 }}
+    className="w-40 h-40"
+  >
+    <Lottie animationData={footerGif} loop={true} />
+  </motion.div>
+</div>
+
       </div>
     </motion.footer>
   );
