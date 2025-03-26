@@ -7,7 +7,7 @@ const transporter = nodemailer.createTransport({
   service: "Gmail",
   auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
 });
-
+const FRONTEND_URL = process.env.FRONTEND_URL;
 // @desc    Register User
 exports.registerUser = async (req, res) => {
   try {
@@ -31,7 +31,7 @@ exports.registerUser = async (req, res) => {
     await user.save();
     console.log(user);
 
-    const verificationLink = `${process.env.FRONTEND_URL}/api/users/verify/${user.emailVerificationToken}`;
+    const verificationLink = `${FRONTEND_URL}/api/users/verify/${user.emailVerificationToken}`;
     await transporter.sendMail({
       to: user.email,
       subject: "Verify Your Email",
@@ -114,7 +114,7 @@ exports.forgotPassword = async (req, res) => {
     await user.save();
     console.log("hi");
 
-    const resetLink = `${process.env.FRONTEND_URL}/reset-password/${user.resetPasswordToken}`;
+    const resetLink = `${FRONTEND_URL}/reset-password/${user.resetPasswordToken}`;
     await transporter.sendMail({
       to: user.email,
       subject: "Reset Your Password",
