@@ -7,7 +7,7 @@ const errorHandler = require("./middlewares/errorHandler");
 const cors = require("cors");
 const path = require("path");
 const app = express();
-
+require('dotenv').config();
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Middleware
