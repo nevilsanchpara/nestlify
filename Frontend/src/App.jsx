@@ -35,7 +35,7 @@ function App() {
           <Route path="/admin" element={<AdminPortal />} />
           <Route path="/property/:id" element={<PropertyDetailsPage/>} />
           <Route path="/reset-password/:token" element={<ResetPasswordPage/>} />
-          <Route path="/api/users/verify/:token" element={<Verification/>} />
+          <Route path="/verify/:token" element={<Verification/>} />
           
         </Routes>
         </div>

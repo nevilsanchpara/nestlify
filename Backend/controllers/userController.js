@@ -32,7 +32,7 @@ exports.registerUser = async (req, res) => {
     await user.save();
     console.log(user);
 
-    const verificationLink = `${FRONTEND_URL}verify/${user.emailVerificationToken}`;
+    const verificationLink = `${FRONTEND_URL}/verify/${user.emailVerificationToken}`;
     await transporter.sendMail({
       to: user.email,
       subject: "Verify Your Email",
