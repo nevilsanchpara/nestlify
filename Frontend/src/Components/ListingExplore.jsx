@@ -90,50 +90,52 @@ const ListingExplore = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
-      <div className="flex flex-1">
-        <div className="w-1/3 p-4">
-          <input
-            type="text"
-            placeholder="Search by address"
-            value={searchInput}
-            onChange={handleSearchChange}
-            className="w-full mb-4 p-2 border rounded"
-          />
-          <div className="mb-4">
-            <label>Max Price</label>
+      <div className="w-full p-4 bg-white shadow-md flex items-center space-x-4">
+        <input
+          type="text"
+          placeholder="Search by address"
+          value={searchInput}
+          onChange={handleSearchChange}
+          className="flex-1 p-2 border rounded"
+        />
+        <div className="flex items-center space-x-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Max Price</label>
             <input
               type="number"
               name="price"
               value={filters.price}
               onChange={handleFilterChange}
-              className="w-full p-2 border rounded"
+              className="w-24 p-2 border rounded"
             />
           </div>
-          <div className="mb-4">
-            <label>Min Bedrooms</label>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Min Bedrooms</label>
             <input
               type="number"
               name="bedrooms"
               value={filters.bedrooms}
               onChange={handleFilterChange}
-              className="w-full p-2 border rounded"
+              className="w-24 p-2 border rounded"
             />
           </div>
-          <div className="mb-4">
-            <label>Min Bathrooms</label>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Min Bathrooms</label>
             <input
               type="number"
               name="bathrooms"
               value={filters.bathrooms}
               onChange={handleFilterChange}
-              className="w-full p-2 border rounded"
+              className="w-24 p-2 border rounded"
             />
           </div>
-          <div className="overflow-y-scroll" style={{ height: "calc(100vh - 64px)" }}>
-            {filteredProperties.map((property, index) => (
-              <PropertyCard key={property._id} property={property} onClick={() => handleCardClick(index)} />
-            ))}
-          </div>
+        </div>
+      </div>
+      <div className="flex flex-1">
+        <div className="w-1/3 overflow-y-scroll p-6 my-5" style={{ height: "calc(100vh - 64px)" }}>
+          {filteredProperties.map((property, index) => (
+            <PropertyCard key={property._id} property={property} onClick={() => handleCardClick(index)} />
+          ))}
         </div>
         <div className="w-2/3 z-0" style={{ position: "relative", height: "calc(100vh - 64px)" }}>
           {loading ? (
