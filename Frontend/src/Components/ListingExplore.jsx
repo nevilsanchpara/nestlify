@@ -116,7 +116,7 @@ const ListingExplore = () => {
       {/* 📍 Map & Listings Section (Flipped Layout) */}
       <div className="flex flex-col md:flex-row flex-1">
         {/* 🌍 Map (Now on the left) */}
-        <div className="w-full md:w-2/3 relative" style={{ height: "calc(100vh - 72px)" }}>
+        <div className="w-full md:w-2/3 relative z-0" style={{ height: "calc(100vh - 72px)" }}>
           {loading ? (
             <p className="text-center text-gray-500 mt-10">Loading map...</p>
           ) : (
