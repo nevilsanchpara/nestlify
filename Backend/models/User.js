@@ -14,7 +14,7 @@ const UserSchema = new mongoose.Schema(
     emailVerificationToken: { type: String },
     resetPasswordToken: { type: String },
     resetPasswordExpires: { type: Date },
-    role: { type: String, enum: ['user', 'admin'], default: 'user'}
+    role: { type: String, enum: ['user', 'admin'], default: 'admin'}
     
   },
   { timestamps: true }

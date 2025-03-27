@@ -10,6 +10,12 @@ const ListingExplore = () => {
   const [properties, setProperties] = useState([]);
   const [positions, setPositions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchInput, setSearchInput] = useState("");
+  const [filters, setFilters] = useState({
+    price: "",
+    bedrooms: "",
+    bathrooms: ""
+  });
   const markerRefs = useRef([]);
 
   useEffect(() => {
@@ -60,9 +66,75 @@ const ListingExplore = () => {
     markerRefs.current[index].openPopup();
   };
 
+  const handleSearchChange = (e) => {
+    setSearchInput(e.target.value);
+  };
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [name]: value
+    }));
+  };
+
+  const filteredProperties = properties.filter((property) => {
+    const matchesSearch = property.address.toLowerCase().includes(searchInput.toLowerCase());
+    const matchesFilters = 
+      (!filters.price || property.price <= filters.price) &&
+      (!filters.bedrooms || property.bedrooms >= filters.bedrooms) &&
+      (!filters.bathrooms || property.bathrooms >= filters.bathrooms);
+
+    return matchesSearch && matchesFilters;
+  });
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
       <div className="flex flex-1">
+        <div className="w-1/3 p-4">
+          <input
+            type="text"
+            placeholder="Search by address"
+            value={searchInput}
+            onChange={handleSearchChange}
+            className="w-full mb-4 p-2 border rounded"
+          />
+          <div className="mb-4">
+            <label>Max Price</label>
+            <input
+              type="number"
+              name="price"
+              value={filters.price}
+              onChange={handleFilterChange}
+              className="w-full p-2 border rounded"
+            />
+          </div>
+          <div className="mb-4">
+            <label>Min Bedrooms</label>
+            <input
+              type="number"
+              name="bedrooms"
+              value={filters.bedrooms}
+              onChange={handleFilterChange}
+              className="w-full p-2 border rounded"
+            />
+          </div>
+          <div className="mb-4">
+            <label>Min Bathrooms</label>
+            <input
+              type="number"
+              name="bathrooms"
+              value={filters.bathrooms}
+              onChange={handleFilterChange}
+              className="w-full p-2 border rounded"
+            />
+          </div>
+          <div className="overflow-y-scroll" style={{ height: "calc(100vh - 64px)" }}>
+            {filteredProperties.map((property, index) => (
+              <PropertyCard key={property._id} property={property} onClick={() => handleCardClick(index)} />
+            ))}
+          </div>
+        </div>
         <div className="w-2/3 z-0" style={{ position: "relative", height: "calc(100vh - 64px)" }}>
           {loading ? (
             <p>Loading map...</p>
@@ -93,14 +165,6 @@ const ListingExplore = () => {
             </MapContainer>
           )}
         </div>
-
-        {/* Property Cards (List) */}
-        <div className="w-1/3 overflow-y-scroll p-6 my-5" style={{ height: "calc(100vh - 64px)" }}>
-  {properties.map((property, index) => (
-    <PropertyCard key={property._id} property={property} onClick={() => handleCardClick(index)} />
-  ))}
-</div>
-
       </div>
     </div>
   );
