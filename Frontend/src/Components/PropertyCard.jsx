@@ -1,35 +1,62 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
-import { FaBath, FaBed, FaMapMarkerAlt, FaHeart } from "react-icons/fa";
-import "swiper/css";
-import "swiper/css/navigation";
+import React, { useState, useEffect } from 'react';
+import { FaMapMarkerAlt, FaBed, FaBath, FaHeart } from 'react-icons/fa';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation } from 'swiper/modules';
+import { Link, useNavigate } from 'react-router-dom';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const PropertyCard = ({ property, onClick }) => {
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const navigate = useNavigate();
+  const userId = sessionStorage.getItem('user'); // Assuming userId is stored in localStorage after login
 
   useEffect(() => {
-    const savedWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-    setIsWishlisted(savedWishlist.includes(property._id));
-  }, [property._id]);
+    const fetchWishlistStatus = async () => {
+      try {
+        if (userId) {
+          const wishlistResponse = await fetch(`${apiUrl}/api/wishlist/${userId}`);
+          const wishlistData = await wishlistResponse.json();
+          setIsWishlisted(wishlistData.properties.some(p => p._id === property._id));
+        }
+      } catch (error) {
+        console.error('Failed to fetch wishlist status:', error);
+      }
+    };
+    fetchWishlistStatus();
+  }, [property._id, userId]);
 
-  const toggleWishlist = (e) => {
+  const toggleWishlist = async (e) => {
     e.stopPropagation();
-    let savedWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-    if (isWishlisted) {
-      savedWishlist = savedWishlist.filter((id) => id !== property._id);
-    } else {
-      savedWishlist.push(property._id);
+    if (!userId) {
+      alert("You need to be logged in to add properties to your wishlist.");
+      navigate('/login'); // Redirect to login page
+      return;
     }
-    localStorage.setItem("wishlist", JSON.stringify(savedWishlist));
-    setIsWishlisted(!isWishlisted);
+
+    try {
+      if (isWishlisted) {
+        await fetch(`${apiUrl}/api/wishlist/${userId}/${property._id}`, {
+          method: 'DELETE',
+        });
+      } else {
+        await fetch(`${apiUrl}/api/wishlist/`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId, propertyId: property._id }),
+        });
+      }
+      setIsWishlisted(!isWishlisted);
+    } catch (error) {
+      console.error('Failed to update wishlist:', error);
+    }
   };
 
   return (
     <div className="bg-white rounded-lg shadow-lg overflow-hidden relative cursor-pointer transition-transform transform hover:scale-105" onClick={onClick}>
-      
-      {/* Wishlist Button (Now Clearly Visible on Top Right) */}
       <button
         onClick={toggleWishlist}
         className="absolute top-4 right-4 bg-white p-2 rounded-full shadow-lg z-10 hover:scale-110 transition-transform"
@@ -37,7 +64,6 @@ const PropertyCard = ({ property, onClick }) => {
         <FaHeart className={isWishlisted ? "text-red-600" : "text-gray-400"} size={22} />
       </button>
 
-      {/* Image Carousel */}
       <Swiper navigation modules={[Navigation]} className="w-full h-64">
         {property.photos.map((photo, index) => (
           <SwiperSlide key={index}>
@@ -46,23 +72,18 @@ const PropertyCard = ({ property, onClick }) => {
         ))}
       </Swiper>
 
-      {/* Property Details */}
       <div className="p-4">
-        {/* Price & Status */}
         <div className="flex items-center justify-between">
           <span className="text-lg font-semibold text-blue-600">${property.price.toLocaleString()}</span>
           <span className="text-gray-500 text-sm">Available from: {new Date(property.availableFrom).toLocaleDateString()}</span>
         </div>
 
-        {/* Title */}
         <h3 className="text-xl font-bold text-gray-800 mt-1">{property.title}</h3>
 
-        {/* Location */}
         <p className="text-gray-600 flex items-center mt-1">
           <FaMapMarkerAlt className="text-red-500 mr-2" /> {property.address}
         </p>
 
-        {/* Bedrooms & Bathrooms */}
         <div className="flex items-center gap-4 mt-2 text-gray-600">
           <span className="flex items-center gap-1">
             <FaBed className="text-indigo-600" /> {property.bedrooms} Bed
@@ -72,7 +93,6 @@ const PropertyCard = ({ property, onClick }) => {
           </span>
         </div>
 
-        {/* View Details Button */}
         <Link
           to={`/property/${property._id}`}
           className="block text-center mt-4 bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition"
