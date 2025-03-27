@@ -14,6 +14,7 @@ import AdminPortal from "./Components/AdminPortal";
 import PropertyDetailsPage from "./Components/PropertyDetailsPage";
 import "./index.css";
 import ResetPasswordPage from './Components/ResetPasswordPage';
+import VerifyAccount from './Components/VerifyAccount';
 const apiUrl = import.meta.env.VITE_API_URL;
 
 function App() {
@@ -34,7 +35,7 @@ function App() {
           <Route path="/admin" element={<AdminPortal />} />
           <Route path="/property/:id" element={<PropertyDetailsPage/>} />
           <Route path="/reset-password/:token" element={<ResetPasswordPage/>} />
-          
+          <Route path="/verify-account/:token" element={<VerifyAccount />} />
         </Routes>
         </div>
       <Footer />
