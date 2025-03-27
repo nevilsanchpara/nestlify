@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Search, Moon, Sun, ShoppingBag } from 'lucide-react';
 
@@ -7,6 +7,14 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
+  const [user, setUser] = useState(null);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const userData = JSON.parse(sessionStorage.getItem('user'));
+    setUser(userData);
+  }, []);
 
   useEffect(() => {
     if (darkMode) {
@@ -16,13 +24,23 @@ const Navbar = () => {
     }
   }, [darkMode]);
 
+  const handleLogout = () => {
+    sessionStorage.removeItem('user');
+    sessionStorage.removeItem('token');
+    setUser(null);
+    navigate('/login');
+  };
+
   const navLinks = [
     { name: 'Home', id: '/' },
     { name: 'Explore', id: '/explore' },
     { name: 'Contact', id: '/contact' },
-    { name: 'Login/Register', id: '/login' },
-    { name: 'Admin', id: '/admin' },
+    { name: user ? 'Logout' : 'Login/Register', id: user ? '/logout' : '/login' },
   ];
+
+  if (user && user.role === 'admin') {
+    navLinks.push({ name: 'Admin', id: '/admin' });
+  }
 
   return (
     <nav className="fixed top-0 left-0 w-full bg-white/50 dark:bg-gray-900/80 backdrop-blur-md shadow-md z-50 transition-colors">
@@ -38,6 +56,7 @@ const Navbar = () => {
               href={link.id}
               whileHover={{ scale: 1.1 }}
               className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all duration-300"
+              onClick={link.name === 'Logout' ? handleLogout : null}
             >
               {link.name}
             </motion.a>
@@ -63,9 +82,15 @@ const Navbar = () => {
 
       <AnimatePresence>
         {isOpen && (
-          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="absolute top-full left-0 w-full bg-white dark:bg-gray-900 shadow-md md:hidden flex flex-col items-center py-4 space-y-4">
+          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="absolute top-full left-0 w-full bg-white dark:bg-gray-900 shadow-md">
             {navLinks.map((link, index) => (
-              <motion.a key={index} href={link.id} whileHover={{ scale: 1.1 }} className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white text-lg transition-all duration-300" onClick={() => setIsOpen(false)}>
+              <motion.a
+                key={index}
+                href={link.id}
+                whileHover={{ scale: 1.1 }}
+                className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white text-lg transition-all duration-300 block px-6 py-4"
+                onClick={link.name === 'Logout' ? handleLogout : null}
+              >
                 {link.name}
               </motion.a>
             ))}
@@ -75,7 +100,7 @@ const Navbar = () => {
 
       <AnimatePresence>
         {showSearch && (
-          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="absolute top-full left-1/2 transform -translate-x-1/2 w-full max-w-lg bg-white dark:bg-gray-800 shadow-lg rounded-lg p-4">
+          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="absolute top-full left-1/2 transform -translate-x-1/2 w-full max-w-lg m-4">
             <div className="flex items-center border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
               <input type="text" placeholder="Search..." className="w-full px-4 py-2 text-gray-900 dark:text-white bg-transparent outline-none" />
               <button className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white">

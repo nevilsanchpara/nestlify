@@ -1,15 +1,27 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AdminPropertyForm from './AdminPropertyForm';
+
 const apiUrl = import.meta.env.VITE_API_URL;
+
 const AdminPortal = () => {
   const [properties, setProperties] = useState([]);
   const [editingProperty, setEditingProperty] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProperties = async () => {
       try {
         const token = sessionStorage.getItem('token');
+        const user = JSON.parse(sessionStorage.getItem('user'));
+
+        if (user.role !== 'admin') {
+          alert('Access denied: Admins only');
+          navigate('/login');
+          return;
+        }
+
         const response = await axios.get(`${apiUrl}/api/properties`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -22,17 +34,15 @@ const AdminPortal = () => {
     };
 
     fetchProperties();
-  }, []);
+  }, [navigate]);
 
   const handleDelete = async (propertyId) => {
     try {
       const token = sessionStorage.getItem('token');
       await axios.delete(`${apiUrl}/api/properties/${propertyId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
-      setProperties(properties.filter(property => property._id !== propertyId));
+      setProperties(properties.filter((property) => property._id !== propertyId));
     } catch (error) {
       console.error('Error deleting property', error);
     }
@@ -48,15 +58,21 @@ const AdminPortal = () => {
         Add New Property
       </button>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {properties.map(property => (
+        {properties.map((property) => (
           <div key={property._id} className="property-card border rounded-lg shadow-lg overflow-hidden">
             <div className="p-4">
               <h2 className="text-2xl font-semibold mb-2">{property.address}</h2>
               <p className="text-gray-700 mb-2">{property.description}</p>
               <p className="text-gray-900 font-bold mb-2">${property.purchasePrice}</p>
-              <p className="text-gray-600 mb-2"><strong>Bedrooms:</strong> {property.numBeds}</p>
-              <p className="text-gray-600 mb-2"><strong>Bathrooms:</strong> {property.numBaths}</p>
-              <p className="text-gray-600 mb-2"><strong>Type:</strong> {property.propertyType}</p>
+              <p className="text-gray-600 mb-2">
+                <strong>Bedrooms:</strong> {property.numBeds}
+              </p>
+              <p className="text-gray-600 mb-2">
+                <strong>Bathrooms:</strong> {property.numBaths}
+              </p>
+              <p className="text-gray-600 mb-2">
+                <strong>Type:</strong> {property.propertyType}
+              </p>
               <button
                 onClick={() => setEditingProperty(property)}
                 className="mr-2 px-4 py-2 bg-yellow-500 text-white rounded"
@@ -79,7 +95,7 @@ const AdminPortal = () => {
           onClose={() => setEditingProperty(null)}
           onSave={(updatedProperty) => {
             if (editingProperty._id) {
-              setProperties(properties.map(prop => prop._id === updatedProperty._id ? updatedProperty : prop));
+              setProperties(properties.map((prop) => (prop._id === updatedProperty._id ? updatedProperty : prop)));
             } else {
               setProperties([...properties, updatedProperty]);
             }
