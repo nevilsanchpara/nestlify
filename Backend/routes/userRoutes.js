@@ -6,7 +6,7 @@ const {
   resetPassword,
   uploadProfileImage,
   getUsers,
-  loginUser,
+  loginUser
 } = require("../controllers/userController");
 const { protect, admin } = require("../middlewares/authMiddleware");
 const multer = require("multer");
