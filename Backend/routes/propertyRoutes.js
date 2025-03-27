@@ -20,5 +20,5 @@ router.get("/city/:cityId", getPropertiesByCity);
 router.get("/user/properties", protect, getUserProperties);
 router.put("/:id", protect, updateProperty);
 router.delete("/:id", protect, deleteProperty);
-router.post("/:id/contact", propertyController.contactPropertyOwner);
+router.post("/:id/contact", contactPropertyOwner);
 module.exports = router;
