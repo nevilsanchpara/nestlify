@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
-
+import {gif} from '../assets/verified.gif';
 const VerifyAccount = () => {
   const { token } = useParams();
   const [message, setMessage] = useState('');
@@ -34,7 +34,7 @@ const VerifyAccount = () => {
             <p className={`${message.includes('failed') ? 'text-red-500' : 'text-green-500'} mt-4 text-center text-2xl`}>{message}</p>
             {!message.includes('failed') && (
               <>
-                <img src="/src/assets/verified.gif" alt="Verified" className="mt-6 w-1/2 h-auto" />
+                <img src={gif} alt="Verified" className="mt-6 w-1/2 h-auto" />
                 <Link to="/login" className="mt-6 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                   Go to Login
                 </Link>
