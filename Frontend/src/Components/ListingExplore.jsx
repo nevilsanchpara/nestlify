@@ -14,7 +14,7 @@ const ListingExplore = () => {
   const [filters, setFilters] = useState({
     price: "",
     bedrooms: "",
-    bathrooms: ""
+    bathrooms: "",
   });
   const markerRefs = useRef([]);
 
@@ -31,24 +31,20 @@ const ListingExplore = () => {
         console.error("Error fetching properties", error);
       }
     };
-
     fetchProperties();
   }, []);
 
   const geocodeAddress = async (property) => {
-    const address = property.address;
     try {
       const response = await axios.get(
-        `https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(address)}&apiKey=70206657263b425b8ad95de27ea1f3da`
+        `https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(property.address)}&apiKey=70206657263b425b8ad95de27ea1f3da`
       );
-      if (response.data && response.data.features && response.data.features.length > 0) {
+      if (response.data?.features?.length > 0) {
         const { lat, lon } = response.data.features[0].properties;
         return { lat: parseFloat(lat), lon: parseFloat(lon), property };
-      } else {
-        console.error("No results found for address:", address);
       }
     } catch (error) {
-      console.error("Error geocoding address:", address, error);
+      console.error("Error geocoding address:", error);
     }
     return null;
   };
@@ -66,80 +62,63 @@ const ListingExplore = () => {
     markerRefs.current[index].openPopup();
   };
 
-  const handleSearchChange = (e) => {
-    setSearchInput(e.target.value);
-  };
+  const handleSearchChange = (e) => setSearchInput(e.target.value);
 
   const handleFilterChange = (e) => {
-    const { name, value } = e.target;
     setFilters((prevFilters) => ({
       ...prevFilters,
-      [name]: value
+      [e.target.name]: e.target.value,
     }));
   };
 
   const filteredProperties = properties.filter((property) => {
     const matchesSearch = property.address.toLowerCase().includes(searchInput.toLowerCase());
-    const matchesFilters = 
+    return (
+      matchesSearch &&
       (!filters.price || property.price <= filters.price) &&
       (!filters.bedrooms || property.bedrooms >= filters.bedrooms) &&
-      (!filters.bathrooms || property.bathrooms >= filters.bathrooms);
-
-    return matchesSearch && matchesFilters;
+      (!filters.bathrooms || property.bathrooms >= filters.bathrooms)
+    );
   });
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100">
-      <div className="w-full p-4 bg-white shadow-md flex items-center space-x-4">
+    <div className="min-h-screen flex flex-col bg-gray-50">
+      {/* 🔎 Modern Search & Filter Bar */}
+      <div className="w-full px-6 py-4 bg-white shadow-md flex flex-wrap items-center justify-between gap-4">
         <input
           type="text"
-          placeholder="Search by address"
+          placeholder="🔍 Search by address"
           value={searchInput}
           onChange={handleSearchChange}
-          className="flex-1 p-2 border rounded"
+          className="flex-1 p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
         />
-        <div className="flex items-center space-x-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Max Price</label>
-            <input
-              type="number"
-              name="price"
-              value={filters.price}
-              onChange={handleFilterChange}
-              className="w-24 p-2 border rounded"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Min Bedrooms</label>
-            <input
-              type="number"
-              name="bedrooms"
-              value={filters.bedrooms}
-              onChange={handleFilterChange}
-              className="w-24 p-2 border rounded"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Min Bathrooms</label>
-            <input
-              type="number"
-              name="bathrooms"
-              value={filters.bathrooms}
-              onChange={handleFilterChange}
-              className="w-24 p-2 border rounded"
-            />
-          </div>
-        </div>
-      </div>
-      <div className="flex flex-1">
-        <div className="w-1/3 overflow-y-scroll p-6 my-5" style={{ height: "calc(100vh - 64px)" }}>
-          {filteredProperties.map((property, index) => (
-            <PropertyCard key={property._id} property={property} onClick={() => handleCardClick(index)} />
+
+        <div className="flex flex-wrap items-center gap-4">
+          {[
+            { label: "Max Price", name: "price", type: "number" },
+            { label: "Min Bedrooms", name: "bedrooms", type: "number" },
+            { label: "Min Bathrooms", name: "bathrooms", type: "number" },
+          ].map(({ label, name, type }) => (
+            <div key={name} className="flex flex-col">
+              <label className="text-sm font-medium text-gray-700">{label}</label>
+              <input
+                type={type}
+                name={name}
+                value={filters[name]}
+                onChange={handleFilterChange}
+                className="w-28 p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
           ))}
         </div>
-        <div className="w-2/3 z-0" style={{ position: "relative", height: "calc(100vh - 64px)" }}>
+      </div>
+
+      {/* 📍 Map & Listings Section (Flipped Layout) */}
+      <div className="flex flex-col md:flex-row flex-1">
+        {/* 🌍 Map (Now on the left) */}
+        <div className="w-full md:w-2/3 relative" style={{ height: "calc(100vh - 72px)" }}>
           {loading ? (
-            <p>Loading map...</p>
+            <p className="text-center text-gray-500 mt-10">Loading map...</p>
           ) : (
             <MapContainer center={[43.65107, -79.347015]} zoom={12} style={{ height: "100%", width: "100%" }}>
               <TileLayer
@@ -149,22 +128,33 @@ const ListingExplore = () => {
               {positions.map((position, index) => (
                 <Marker key={index} position={[position.lat, position.lon]} icon={defaultIcon} ref={(el) => (markerRefs.current[index] = el)}>
                   <Popup>
-                    <div>
-                      <h2>{position.property.address}</h2>
-                      <p>
-                        <strong>Price:</strong> ${position.property.price}
+                    <div className="text-sm">
+                      <h3 className="font-semibold text-gray-800">{position.property.address}</h3>
+                      <p className="text-gray-600">
+                        <strong>💰 Price:</strong> ${position.property.price.toLocaleString()}
                       </p>
-                      <p>
-                        <strong>Bedrooms:</strong> {position.property.bedrooms}
+                      <p className="text-gray-600">
+                        <strong>🛏 Bedrooms:</strong> {position.property.bedrooms}
                       </p>
-                      <p>
-                        <strong>Bathrooms:</strong> {position.property.bathrooms}
+                      <p className="text-gray-600">
+                        <strong>🛁 Bathrooms:</strong> {position.property.bathrooms}
                       </p>
                     </div>
                   </Popup>
                 </Marker>
               ))}
             </MapContainer>
+          )}
+        </div>
+
+        {/* 🏡 Property Listings (Now on the right) */}
+        <div className="w-full md:w-1/3 overflow-y-scroll p-6 space-y-4 bg-white shadow-lg" style={{ height: "calc(100vh - 72px)" }}>
+          {filteredProperties.length > 0 ? (
+            filteredProperties.map((property, index) => (
+              <PropertyCard key={property._id} property={property} onClick={() => handleCardClick(index)} />
+            ))
+          ) : (
+            <p className="text-gray-500 text-center mt-10">No properties match your search.</p>
           )}
         </div>
       </div>
