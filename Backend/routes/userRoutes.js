@@ -8,7 +8,7 @@ const {
   getUsers,
   loginUser,
 } = require("../controllers/userController");
-const { protect } = require("../middlewares/authMiddleware");
+const { protect, admin } = require("../middlewares/authMiddleware");
 const multer = require("multer");
 
 const router = express.Router();
@@ -34,5 +34,6 @@ router.post("/forgot-password", forgotPassword);
 router.get("/", getUsers);
 router.post("/reset-password", resetPassword);
 router.post("/upload", protect, upload.single("image"), uploadProfileImage);
+router.get('/dashboard', protect, admin, getAdminDashboard);
 
 module.exports = router;
