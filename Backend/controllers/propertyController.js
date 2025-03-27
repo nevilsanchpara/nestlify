@@ -5,7 +5,10 @@ const City = require("../models/City");
 const nodemailer = require("nodemailer");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 require("dotenv").config();
-
+const transporter = nodemailer.createTransport({
+  service: "Gmail",
+  auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
+});
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -194,13 +197,7 @@ exports.contactPropertyOwner = async (req, res) => {
     const ownerEmail = property.postedBy.email;
 
     // Create a transporter object using the default SMTP transport
-    let transporter = nodemailer.createTransport({
-      service: "Gmail",
-      auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_PASS,
-      },
-    });
+   
 
     // Set up email data
     let mailOptions = {
