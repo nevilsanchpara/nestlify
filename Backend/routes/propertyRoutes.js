@@ -7,6 +7,7 @@ const {
   getUserProperties,
   updateProperty,
   deleteProperty,
+  contactPropertyOwner
 } = require("../controllers/propertyController");
 const { protect } = require("../middlewares/authMiddleware");
 
