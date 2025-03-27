@@ -34,6 +34,6 @@ router.post("/forgot-password", forgotPassword);
 router.get("/", getUsers);
 router.post("/reset-password", resetPassword);
 router.post("/upload", protect, upload.single("image"), uploadProfileImage);
-router.get('/dashboard', protect, admin, getAdminDashboard);
+
 
 module.exports = router;
