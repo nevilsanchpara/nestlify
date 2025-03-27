@@ -1,5 +1,5 @@
 const express = require("express");
-const { createCity, getAllCities,getCityById,deleteCity } = require("../controllers/cityController");
+const { createCity, getAllCities, getCityById, deleteCity } = require("../controllers/cityController");
 const router = express.Router();
 
 router.post("/", createCity);
