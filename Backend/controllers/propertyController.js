@@ -176,3 +176,47 @@ exports.deleteProperty = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// @desc    Contact Property Owner
+exports.contactPropertyOwner = async (req, res) => {
+  try {
+    const { name, email, message } = req.body;
+    const property = await Property.findById(req.params.id).populate(
+      "postedBy",
+      "email firstName lastName"
+    );
+
+    if (!property) {
+      return res.status(404).json({ message: "Property not found" });
+    }
+
+    const ownerEmail = property.postedBy.email;
+
+    // Create a transporter object using the default SMTP transport
+    let transporter = nodemailer.createTransport({
+      service: "Gmail",
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_PASS,
+      },
+    });
+
+    // Set up email data
+    let mailOptions = {
+      from: email, // sender address
+      to: ownerEmail, // list of receivers
+      subject: `Inquiry about property: ${property.title}`, // Subject line
+      text: `You have received an inquiry from ${name} (${email}):\n\n${message}`, // plain text body
+    };
+
+    // Send mail with defined transport object
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return res.status(500).json({ message: error.message });
+      }
+      res.status(200).json({ message: "Inquiry sent successfully" });
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

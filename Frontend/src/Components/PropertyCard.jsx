@@ -1,24 +1,28 @@
 import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaMapMarkerAlt, FaBed, FaBath, FaHeart } from 'react-icons/fa';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
-import { Link, useNavigate } from 'react-router-dom';
 import 'swiper/css';
 import 'swiper/css/navigation';
-import 'swiper/css/pagination';
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const PropertyCard = ({ property, onClick }) => {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const navigate = useNavigate();
-  const userId = sessionStorage.getItem('user'); // Assuming userId is stored in localStorage after login
+  const sessionToken = sessionStorage.getItem('token');
+  const user = JSON.parse(sessionStorage.getItem('user'));
 
   useEffect(() => {
     const fetchWishlistStatus = async () => {
       try {
-        if (userId) {
-          const wishlistResponse = await fetch(`${apiUrl}/api/wishlist/${userId}`);
+        if (user?._id) {
+          const wishlistResponse = await fetch(`${apiUrl}/api/wishlist/${user._id}`, {
+            headers: {
+              'Authorization': `Bearer ${sessionToken}`,
+            },
+          });
           const wishlistData = await wishlistResponse.json();
           setIsWishlisted(wishlistData.properties.some(p => p._id === property._id));
         }
@@ -27,11 +31,11 @@ const PropertyCard = ({ property, onClick }) => {
       }
     };
     fetchWishlistStatus();
-  }, [property._id, userId]);
+  }, [property._id, user?._id, sessionToken]);
 
   const toggleWishlist = async (e) => {
     e.stopPropagation();
-    if (!userId) {
+    if (!user?._id) {
       alert("You need to be logged in to add properties to your wishlist.");
       navigate('/login'); // Redirect to login page
       return;
@@ -39,14 +43,20 @@ const PropertyCard = ({ property, onClick }) => {
 
     try {
       if (isWishlisted) {
-        await fetch(`${apiUrl}/api/wishlist/${userId}/${property._id}`, {
+        await fetch(`${apiUrl}/api/wishlist/${user._id}/${property._id}`, {
           method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${sessionToken}`,
+          },
         });
       } else {
         await fetch(`${apiUrl}/api/wishlist/`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId, propertyId: property._id }),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionToken}`,
+          },
+          body: JSON.stringify({ userId: user._id, propertyId: property._id }),
         });
       }
       setIsWishlisted(!isWishlisted);
