@@ -29,7 +29,7 @@ const AdminPropertyForm = ({ property, onClose, onSave }) => {
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/city`);
+        const response = await axios.get(`${apiUrl}/api/city`);
         setCities(response.data);
       } catch (error) {
         console.error('Error fetching cities', error);
