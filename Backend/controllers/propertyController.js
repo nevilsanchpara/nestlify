@@ -2,6 +2,7 @@ const Property = require("../models/Property");
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
 const City = require("../models/City");
+const nodemailer = require("nodemailer");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 require("dotenv").config();
 
