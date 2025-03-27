@@ -10,6 +10,7 @@ import ForgotPassword from "./Components/ForgotPassword";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Search from "./Components/Search";
+import Verification from "./Components/Verification";
 import AdminPortal from "./Components/AdminPortal";
 import PropertyDetailsPage from "./Components/PropertyDetailsPage";
 import "./index.css";

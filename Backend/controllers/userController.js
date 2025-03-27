@@ -8,6 +8,7 @@ const transporter = nodemailer.createTransport({
   auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
 });
 const FRONTEND_URL =  "https://nestlify.vercel.app";
+const VITE_API_URL =  "https://nestlify-xelq.vercel.app";
 // @desc    Register User
 exports.registerUser = async (req, res) => {
   try {
