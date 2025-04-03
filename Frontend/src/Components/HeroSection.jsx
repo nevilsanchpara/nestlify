@@ -38,7 +38,7 @@ const HeroSection = () => {
           Experience the Future of Innovation
         </motion.h1>
 
-        {/* Search Bar */}
+        {/* Search Bar
         <motion.div 
           initial={{ opacity: 0, y: 20 }} 
           animate={{ opacity: 1, y: 0 }} 
@@ -56,7 +56,7 @@ const HeroSection = () => {
           >
             SEARCH
           </motion.button>
-        </motion.div>
+        </motion.div> */}
 
         {/* Call to Action */}
         <motion.button 

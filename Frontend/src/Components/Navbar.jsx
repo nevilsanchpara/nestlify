@@ -63,7 +63,7 @@ const Navbar = () => {
           ))}
         </div>
 
-        <div className="hidden md:flex space-x-4 items-center">
+        {/* <div className="hidden md:flex space-x-4 items-center">
           <motion.button whileHover={{ scale: 1.2 }} className="text-2xl text-gray-700 dark:text-gray-300" onClick={() => setShowSearch(!showSearch)}>
             <Search />
           </motion.button>
@@ -73,7 +73,7 @@ const Navbar = () => {
           <motion.button whileHover={{ scale: 1.2 }} className="text-2xl text-gray-700 dark:text-gray-300">
             <ShoppingBag />
           </motion.button>
-        </div>
+        </div> */}
 
         <button className="md:hidden text-gray-900 dark:text-white text-2xl" onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? <X /> : <Menu />}
