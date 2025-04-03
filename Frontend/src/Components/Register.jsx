@@ -22,7 +22,7 @@ const Register = () => {
   const onSubmit = async (data) => {
     try {
       const response = await axios.post(`${apiUrl}/api/users/register`, data);
-      alert('Registration successful');
+      alert('Registration successful Check Emial for verification link');
       window.location.href = '/login';
     } catch (err) {
       console.error('Failed to register', err);
